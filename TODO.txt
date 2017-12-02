@@ -1,0 +1,25 @@
+* FIX ANGLE TO DO AS DEFINED. RIGHT NOW SUPER UNPREDICTABLE.
+* Go back over docs.
+* Make sure special cases are directly under ifs.
+* Update pred and pred_test to non-private.
+* Add package docs.
+* Add examples.
+* Add tests.
+* Distinguish between when Lines, distances, and angles are used as normal
+  versus when used as vectors.
+* Support PI, (), +, -, /, * with shunting yard in parse.
+* Simplify edge case handling as much as possible.
+* Justify having preds public by saying that transform is a library for dealing
+  with transformations.
+* Make sure the strict syntax of required spaces is tested in parse.
+* Rename constructor to something else.
+* Document function syntax.
+* Better naming in parse.
+* Draw Lines across the entire drawable part of the canvas.
+* Use a smaller radius for the Line.
+* Different colors for Points, Lines, demonstration Lines, and text.
+* Scale Points to canvas.
+* Draw norms and intermediate steps on canvas.
+* Write viz so that images can be composed to simplify, do this by passing an
+  image.Image to each compose.
+* pred -> predicate
