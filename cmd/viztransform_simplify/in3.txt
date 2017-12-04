@@ -1,0 +1,6 @@
+LineReflection({(1 0) (1 1)})
+LineReflection({(2 0) (2 1)})
+LineReflection({(3 0) (3 1)})
+LineReflection({(4 0) (4 1)})
+LineReflection({(5 0) (5 1)})
+LineReflection({(6 0) (6 1)})

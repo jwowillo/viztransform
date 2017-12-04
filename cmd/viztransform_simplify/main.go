@@ -18,7 +18,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println(parse.UnparseSimplified(t))
+	fmt.Println(t)
 }
 
 var errArgs = errors.New("must not pass any args")

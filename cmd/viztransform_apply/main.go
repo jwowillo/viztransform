@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	fmt.Println(parse.UnparsePoint(transform.Apply(t, p)))
+	fmt.Println(transform.Apply(t, p))
 }
 
 var errArgs = errors.New("must pass point to transform")
@@ -47,9 +47,9 @@ func usage() {
 	out += "\tTransformations:\n"
 	out += "\t- NoTransformation()\n"
 	out += "\t- LineReflection({(ax ay) (bx by)})\n"
-	out += "\t- Translation({(ax ay) (bx by)}, dist)\n"
+	out += "\t- Translation(<i j>)\n"
 	out += "\t- Rotation((x y), rads)\n"
-	out += "\t- GlideReflection({(ax ay) (bx by)}, dist)\n\n"
+	out += "\t- GlideReflection({(ax ay) (bx by)}, <i j>)\n\n"
 	out += "\tExample:\n"
 	out += "\tviztransform_apply '(1 1)'\n"
 	out += "\tNoTransformation()\n"

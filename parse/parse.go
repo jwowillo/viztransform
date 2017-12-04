@@ -1,3 +1,5 @@
+// Package parse has functions that turn string representations of primitives in
+// package geometry into their respective primitives.
 package parse
 
 import (
@@ -16,9 +18,13 @@ var (
 	// ErrBadTransformation ...
 	ErrBadTransformation = errors.New("bad trans")
 	// ErrBadLine ...
-	ErrBadLine = errors.New("bad lin")
+	ErrBadLine = errors.New("bad line")
 	// ErrBadPoint ...
 	ErrBadPoint = errors.New("bad point")
+	// ErrBadVector ...
+	ErrBadVector = errors.New("bad vector")
+	// ErrBadNumber ...
+	ErrBadNumber = errors.New("bad number")
 )
 
 // Transformation ...
@@ -90,23 +96,18 @@ func parseLineReflection(xs []string) (transform.Transformation, error) {
 }
 
 func parseTranslation(xs []string) (transform.Transformation, error) {
-	// {(%f %f) (%f %f)}, %f
-	if len(xs) != 2 {
+	// <%f %f>
+	if len(xs) != 1 {
 		return nil, ErrBadTransformation
 	}
-	l, err := Line(xs[0])
+	v, err := Vector(xs[0])
 	if err != nil {
 		return nil, ErrBadTransformation
 	}
-	dist, err := strconv.ParseFloat(xs[1], 64)
-	if err != nil {
-		return nil, ErrBadTransformation
-	}
-	return transform.Translation(l, dist), nil
+	return transform.Translation(v), nil
 }
 
 func parseRotation(xs []string) (transform.Transformation, error) {
-	// (%f %f), %f
 	if len(xs) != 2 {
 		return nil, ErrBadTransformation
 	}
@@ -114,7 +115,7 @@ func parseRotation(xs []string) (transform.Transformation, error) {
 	if err != nil {
 		return nil, ErrBadTransformation
 	}
-	rads, err := strconv.ParseFloat(xs[1], 64)
+	rads, err := Number(xs[1])
 	if err != nil {
 		return nil, ErrBadTransformation
 	}
@@ -122,7 +123,6 @@ func parseRotation(xs []string) (transform.Transformation, error) {
 }
 
 func parseGlideReflection(xs []string) (transform.Transformation, error) {
-	// {(%f %f) (%f %f)}, %f
 	if len(xs) != 2 {
 		return nil, ErrBadTransformation
 	}
@@ -130,11 +130,11 @@ func parseGlideReflection(xs []string) (transform.Transformation, error) {
 	if err != nil {
 		return nil, ErrBadTransformation
 	}
-	dist, err := strconv.ParseFloat(xs[1], 64)
+	v, err := Vector(xs[1])
 	if err != nil {
 		return nil, ErrBadTransformation
 	}
-	return transform.GlideReflection(l, dist), nil
+	return transform.GlideReflection(l, v), nil
 }
 
 // Line ...
@@ -163,6 +163,26 @@ func Line(x string) (geometry.Line, error) {
 	return geometry.NewLineFromPoints(a, b)
 }
 
+// Vector ...
+func Vector(sx string) (geometry.Vector, error) {
+	if sx[0] != '<' || sx[len(sx)-1] != '>' {
+		return geometry.Vector{}, ErrBadVector
+	}
+	fs := strings.Split(sx[1:len(sx)-1], " ")
+	if len(fs) != 2 {
+		return geometry.Vector{}, ErrBadVector
+	}
+	i, err := Number(fs[0])
+	if err != nil {
+		return geometry.Vector{}, ErrBadVector
+	}
+	j, err := Number(fs[1])
+	if err != nil {
+		return geometry.Vector{}, ErrBadVector
+	}
+	return geometry.Vector{I: i, J: j}, nil
+}
+
 // Point ...
 func Point(sx string) (geometry.Point, error) {
 	// (%f %f)
@@ -173,13 +193,22 @@ func Point(sx string) (geometry.Point, error) {
 	if len(fs) != 2 {
 		return geometry.Point{}, ErrBadPoint
 	}
-	x, err := strconv.ParseFloat(fs[0], 64)
+	x, err := Number(fs[0])
 	if err != nil {
 		return geometry.Point{}, ErrBadPoint
 	}
-	y, err := strconv.ParseFloat(fs[1], 64)
+	y, err := Number(fs[1])
 	if err != nil {
 		return geometry.Point{}, ErrBadPoint
 	}
 	return geometry.Point{X: x, Y: y}, nil
+}
+
+// Number ...
+func Number(x string) (geometry.Number, error) {
+	n, err := strconv.ParseFloat(x, 64)
+	if err != nil {
+		return 0, ErrBadNumber
+	}
+	return geometry.Number(n), nil
 }

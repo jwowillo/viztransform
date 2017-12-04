@@ -1,6 +1,8 @@
 package transform
 
-import g "github.com/jwowillo/viztransform/geometry"
+import (
+	g "github.com/jwowillo/viztransform/geometry"
+)
 
 // Apply the Transformation to the Point by reflecting the Point about each Line
 // in order.
@@ -16,12 +18,14 @@ func Apply(t Transformation, p g.Point) g.Point {
 func apply(l g.Line, p g.Point) g.Point {
 	// MustPoint can be used since a Line and its perpendicular must
 	// intersect.
-	i := g.MustPoint(g.Intersection(l, g.Perpendicular(l, p)))
+	i := g.MustPoint(g.Intersection(l, g.PerpendicularThroughPoint(l, p)))
 	return g.Point{X: p.X + 2*(i.X-p.X), Y: p.Y + 2*(i.Y-p.Y)}
 }
 
 // Compose Transformations into a single Transformation by appending them in the
 // order they were given.
+//
+// TODO: Document that this will be slow.
 func Compose(ts ...Transformation) Transformation {
 	var composed Transformation
 	for _, t := range ts {
@@ -52,10 +56,13 @@ func Translation(v g.Vector) Transformation {
 	if g.IsZero(length) {
 		return NoTransformation()
 	}
-	v = g.Scale(v, length/2)
+	v = g.MustVector(g.Scale(v, length/2))
 	a, b := g.Point{X: 0, Y: 0}, g.Point{X: v.I, Y: v.J}
 	l := g.MustLine(g.NewLineFromPoints(a, b))
-	return Transformation{g.Perpendicular(l, a), g.Perpendicular(l, b)}
+	return Transformation{
+		g.PerpendicularThroughPoint(l, a),
+		g.PerpendicularThroughPoint(l, b),
+	}
 }
 
 // Rotation creates a Transformation with TypeRotation that rotates rads radians
@@ -74,8 +81,7 @@ func Rotation(p g.Point, rads g.Number) Transformation {
 //
 // Negative distances will translate in the opposite direction.
 func GlideReflection(ref g.Line, v g.Vector) Transformation {
-	// TODO: Is this right?
 	a := g.PerpendicularThroughPoint(ref, g.Point{X: 0, Y: 0})
 	b := g.PerpendicularThroughPoint(ref, g.Point{X: v.I, Y: v.J})
-	return Compose(LineReflection{ref}, Translation(g.ShortestVector(a, b)))
+	return Compose(LineReflection(ref), Translation(g.ShortestVector(a, b)))
 }

@@ -46,15 +46,15 @@ func Distance(a, b Point) Number {
 	return Length(Vector{I: b.X - a.X, J: b.Y - a.Y})
 }
 
-// Angle that is smallest to rotate Line a counter-clockwise around the
-// intersection with Line b so both Lines are parallel.
+// Angle to rotate Line a counter-clockwise around the intersection with Line b
+// so both Lines are parallel.
 func Angle(a, b Line) Number {
 	if AreParallel(a, b) {
 		return 0
 	}
 	radsa := math.Atan2(float64(dy(a)), float64(dx(a)))
 	radsb := math.Atan2(float64(dy(b)), float64(dx(b)))
-	rads := Number(math.Abs(radsa - radsb))
+	rads := Number(radsa - radsb)
 	i := MustPoint(Intersection(a, b))
 	if AreParallel(Rotate(a, i, rads), b) {
 		return rads
@@ -84,8 +84,9 @@ func Intersection(a, b Line) (Point, error) {
 		return Point{}, ErrNoIntersection
 	}
 	m, n := det(a.a.X, a.a.Y, a.b.X, a.b.Y), det(b.a.X, b.a.Y, b.b.X, b.b.Y)
-	xn, yn := det(m, dx(a), n, dx(b)), det(m, dy(a), n, dy(b))
-	d := det(dx(a), dy(b), dy(a), dx(b))
+	xn := det(m, a.a.X-a.b.X, n, b.a.X-b.b.X)
+	yn := det(m, a.a.Y-a.b.Y, n, b.a.Y-b.b.Y)
+	d := det(a.a.X-a.b.X, a.a.Y-a.b.Y, b.a.X-b.b.X, b.a.Y-b.b.Y)
 	return Point{X: xn / d, Y: yn / d}, nil
 }
 
@@ -100,8 +101,14 @@ func Rotate(l Line, p Point, rads Number) Line {
 	ax, ay, bx, by := l.a.X-p.X, l.a.Y-p.Y, l.b.X-p.X, l.b.Y-p.Y
 	cos := Number(math.Cos(float64(rads)))
 	sin := Number(math.Sin(float64(rads)))
-	a := Point{X: det(ax, ay, sin, cos), Y: det(ay, -ax, sin, cos)}
-	b := Point{X: det(bx, by, sin, cos), Y: det(by, -bx, sin, cos)}
+	a := Point{
+		X: det(ax, ay, sin, cos) + p.X,
+		Y: det(ay, -ax, sin, cos) + p.Y,
+	}
+	b := Point{
+		X: det(bx, by, sin, cos) + p.X,
+		Y: det(by, -bx, sin, cos) + p.Y,
+	}
 	return MustLine(NewLineFromPoints(a, b))
 }
 
