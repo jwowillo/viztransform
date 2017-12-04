@@ -62,7 +62,9 @@ func MustPoint(p Point, err error) Point {
 // Point in the xy-plane defined by x and y coordinates.
 type Point struct{ X, Y Number }
 
-// String representation of the Point.
+// String-representation of the Point.
+//
+// Looks like '(X Y)'.
 func (p Point) String() string {
 	return fmt.Sprintf("(%s %s)", p.X, p.Y)
 }
@@ -89,7 +91,9 @@ func NewLineFromPoints(a, b Point) (Line, error) {
 	return Line{a: a, b: b}, nil
 }
 
-// String representation of the Line.
+// String-representation of the Line.
+//
+// Looks like '{A B}' where A and B are two different Points on the Line.
 func (l Line) String() string {
 	return fmt.Sprintf("{%s %s}", l.a, l.b)
 }
@@ -100,7 +104,9 @@ func (l Line) String() string {
 // and the magnitude is the length of the arrow.
 type Vector struct{ I, J Number }
 
-// String representation of the Vector.
+// String-representation of the Vector.
+//
+// Looks like '<I J>'.
 func (v Vector) String() string {
 	return fmt.Sprintf("<%s %s>", v.I, v.J)
 }
@@ -108,7 +114,9 @@ func (v Vector) String() string {
 // Number is an element of the real-numbers.
 type Number float64
 
-// String representation of the Number.
+// String-representation of the Number.
+//
+// Looks like the Number truncated to 32 bits and with -0 turned to 0.
 func (n Number) String() string {
 	if AreEqual(n, 0) {
 		n = 0

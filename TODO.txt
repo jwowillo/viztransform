@@ -23,3 +23,6 @@
 * Write viz so that images can be composed to simplify, do this by passing an
   image.Image to each compose.
 * pred -> predicate
+// TODO: Document that the output GlideReflection vector will always be in the
+// direction of ref so the length can be trivially calculated.
+

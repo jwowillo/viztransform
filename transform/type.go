@@ -6,9 +6,6 @@ import (
 	"github.com/jwowillo/viztransform/geometry"
 )
 
-// TODO: Document that the output GlideReflection vector will always be in the
-// direction of ref so the length can be trivially calculated.
-
 // Types of Transformations.
 //
 // All Transformations fall into one of these categories after simplification.
@@ -49,6 +46,15 @@ const (
 type Transformation []geometry.Line
 
 // String representation of the Transformation.
+//
+// Looks like a called Transformation constructor with arguments that follow
+// their string representations. Examples are:
+//
+// 	NoTransformation()
+// 	LineReflection(Line)
+// 	Translation(Vector)
+// 	Rotation(Point, Number)
+// 	GlideReflection(Line, Vector)
 func (t Transformation) String() string {
 	t = Simplify(t)
 	var out string
