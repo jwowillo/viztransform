@@ -64,7 +64,7 @@ type Point struct{ X, Y Number }
 
 // String-representation of the Point.
 //
-// Looks like '(X Y)'.
+// Looks like '(X Y)' where X and Y are the Point's X and Y values.
 func (p Point) String() string {
 	return fmt.Sprintf("(%s %s)", p.X, p.Y)
 }
@@ -106,7 +106,7 @@ type Vector struct{ I, J Number }
 
 // String-representation of the Vector.
 //
-// Looks like '<I J>'.
+// Looks like '<I J>' where I and J are the Vector's I and J values.
 func (v Vector) String() string {
 	return fmt.Sprintf("<%s %s>", v.I, v.J)
 }

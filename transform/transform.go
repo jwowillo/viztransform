@@ -1,31 +1,30 @@
 package transform
 
 import (
-	g "github.com/jwowillo/viztransform/geometry"
+	"github.com/jwowillo/viztransform/geometry"
 )
 
-// Apply the Transformation to the Point by reflecting the Point about each Line
-// in order.
-func Apply(t Transformation, p g.Point) g.Point {
+// Apply the Transformation to the geometry.Point by applying each
+// line-reflection making up the Transformation in order.
+func Apply(t Transformation, p geometry.Point) geometry.Point {
 	for _, l := range t {
 		p = apply(l, p)
 	}
 	return p
 }
 
-// apply a Transformation with a single Line by reflecting the Point about the
-// Line.
-func apply(l g.Line, p g.Point) g.Point {
-	// MustPoint can be used since a Line and its perpendicular must
-	// intersect.
-	i := g.MustPoint(g.Intersection(l, g.PerpendicularThroughPoint(l, p)))
-	return g.Point{X: p.X + 2*(i.X-p.X), Y: p.Y + 2*(i.Y-p.Y)}
+// apply a line-reflection to the geometry.Point as described in
+// TypeLineReflection.
+func apply(l geometry.Line, p geometry.Point) geometry.Point {
+	i := geometry.MustPoint(geometry.Intersection(
+		l,
+		geometry.PerpendicularThroughPoint(l, p),
+	))
+	return geometry.Point{X: p.X + 2*(i.X-p.X), Y: p.Y + 2*(i.Y-p.Y)}
 }
 
-// Compose Transformations into a single Transformation by appending them in the
-// order they were given.
-//
-// TODO: Document that this will be slow.
+// Compose Transformations into a single Transformation which is the
+// line-reflections in each Transformation appended together in order.
 func Compose(ts ...Transformation) Transformation {
 	var composed Transformation
 	for _, t := range ts {
@@ -35,53 +34,67 @@ func Compose(ts ...Transformation) Transformation {
 }
 
 // NoTransformation creates a Transformation with TypeNoTransformation that does
-// nothing.
+// nothing to geometry.Points.
 func NoTransformation() Transformation {
 	return Transformation{}
 }
 
 // LineReflection creates a Transformation with TypeLineReflection that reflects
-// about l.
-func LineReflection(l g.Line) Transformation {
+// geometry.Points about geometry.Line l as described by TypeLineReflection.
+func LineReflection(l geometry.Line) Transformation {
 	return Transformation{l}
 }
 
 // Translation creates a Transformation with TypeTranslation that translates
-// dist in the direction dir.
+// geometry.Points by the geometry.Vector v as described by TypeTranslation.
 //
-// Order of Points in dir decides the translation-direction. Negative dist will
-// translate in the opposite direction.
-func Translation(v g.Vector) Transformation {
-	length := g.Length(v)
-	if g.IsZero(length) {
+// Returns NoTransformation() if v is length 0.
+func Translation(v geometry.Vector) Transformation {
+	length := geometry.Length(v)
+	if geometry.IsZero(length) {
 		return NoTransformation()
 	}
-	v = g.MustVector(g.Scale(v, length/2))
-	a, b := g.Point{X: 0, Y: 0}, g.Point{X: v.I, Y: v.J}
-	l := g.MustLine(g.NewLineFromPoints(a, b))
+	v = geometry.MustVector(geometry.Scale(v, length/2))
+	a, b := geometry.Point{X: 0, Y: 0}, geometry.Point{X: v.I, Y: v.J}
+	l := geometry.MustLine(geometry.NewLineFromPoints(a, b))
 	return Transformation{
-		g.PerpendicularThroughPoint(l, a),
-		g.PerpendicularThroughPoint(l, b),
+		geometry.PerpendicularThroughPoint(l, a),
+		geometry.PerpendicularThroughPoint(l, b),
 	}
 }
 
-// Rotation creates a Transformation with TypeRotation that rotates rads radians
-// about p.
+// Rotation creates a Transformation with TypeRotation that rotates
+// geometry.Points by geometry.Number rads radians counter-clockwise around
+// geometry.Point p.
 //
-// Negative rads will rotate in the opposite direction.
-func Rotation(p g.Point, rads g.Number) Transformation {
-	a := g.MustLine(g.NewLineFromPoints(p, g.Point{X: p.X + 1, Y: p.Y}))
-	b := g.Rotate(a, p, rads/2)
+// Returns NoTransformation() if rads is 0.
+func Rotation(p geometry.Point, rads geometry.Number) Transformation {
+	if geometry.IsZero(rads) {
+		return NoTransformation()
+	}
+	a := geometry.MustLine(geometry.NewLineFromPoints(
+		p,
+		geometry.Point{X: p.X + 1, Y: p.Y},
+	))
+	b := geometry.Rotate(a, p, rads/2)
 	return Transformation{a, b}
 }
 
 // GlideReflection creates a Transformation with TypeGlideReflection that
-// reflects about ref then translates dist distance in direction parallel to
-// ref.
+// is a Transformation with TypeLineReflection with ref used as the
+// geometry.Line used to create it composed with a Transformation with
+// TypeTranslation with the projection of geometry.Vector v onto the
+// geometry.Line ref used to create it.
 //
-// Negative distances will translate in the opposite direction.
-func GlideReflection(ref g.Line, v g.Vector) Transformation {
-	a := g.PerpendicularThroughPoint(ref, g.Point{X: 0, Y: 0})
-	b := g.PerpendicularThroughPoint(ref, g.Point{X: v.I, Y: v.J})
-	return Compose(LineReflection(ref), Translation(g.ShortestVector(a, b)))
+// Returns LineReflection(ref) if v is length 0.
+func GlideReflection(ref geometry.Line, v geometry.Vector) Transformation {
+	a := geometry.PerpendicularThroughPoint(ref, geometry.Point{X: 0, Y: 0})
+	b := geometry.PerpendicularThroughPoint(
+		ref,
+		geometry.Point{X: v.I, Y: v.J},
+	)
+	return Compose(
+		LineReflection(ref),
+		Translation(geometry.ShortestVector(a, b)),
+	)
 }

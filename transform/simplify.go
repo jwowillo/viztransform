@@ -1,30 +1,35 @@
 package transform
 
-// Algorithm documented in report.
-
 import (
 	"math"
 
-	g "github.com/jwowillo/viztransform/geometry"
+	"github.com/jwowillo/viztransform/geometry"
 )
 
-// IsSimplified ...
+// IsSimplified returns true if the Transformation t uses the minimum number of
+// line-reflections to achieve the result of the Transformation.
 func IsSimplified(t Transformation) bool {
 	if len(t) < 2 {
 		return true
 	}
 	if len(t) == 2 {
-		return !g.AreSameLine(t[0], t[1])
+		return !geometry.AreSameLine(t[0], t[1])
 	}
 	if len(t) == 3 {
 		a, b, c := t[0], t[1], t[2]
-		return g.ArePerpendicular(a, b) && g.AreParallel(b, c) ||
-			g.AreParallel(a, b) && g.ArePerpendicular(b, c)
+		return geometry.ArePerpendicular(a, b) &&
+			geometry.AreParallel(b, c) ||
+			geometry.AreParallel(a, b) &&
+				geometry.ArePerpendicular(b, c)
 	}
 	return false
 }
 
-// Simplify ...
+// Simplify Transformation t into its simplest form that expresses the same
+// Transformation.
+//
+// The algorithm is documented at
+// https://github.com/jwowillo/viztransform/blob/master/doc/algorithm.pdf.
 func Simplify(t Transformation) Transformation {
 	if len(t) < 2 {
 		return t
@@ -41,29 +46,34 @@ func Simplify(t Transformation) Transformation {
 	))
 }
 
-// simplify2 simplifies a Transformation with 2 g.Lines.
-func simplify2(a, b g.Line) Transformation {
-	if g.AreSameLine(a, b) {
+// simplify2 simplifies a Transformation represented by geometry.Lines a and b
+// into its simplest form.
+func simplify2(a, b geometry.Line) Transformation {
+	if geometry.AreSameLine(a, b) {
 		return Transformation{}
 	}
 	return Transformation{a, b}
 }
 
-func simplify3(a, b, c g.Line) Transformation {
+// simplify3 simplifies a Transformation represented by geometry.Lines a, b, and
+// c into its simplest form.
+func simplify3(a, b, c geometry.Line) Transformation {
 	if len(simplify2(a, b)) == 0 {
 		return Transformation{c}
 	}
 	if len(simplify2(b, c)) == 0 {
 		return Transformation{a}
 	}
-	if g.AreParallel(a, b) && g.AreParallel(b, c) {
+	if geometry.AreParallel(a, b) && geometry.AreParallel(b, c) {
 		return Transformation{shiftBToC(a, b, c)}
 	}
-	a, b, c = rotateToPerpendicularAndParallel(a, b, c)
+	a, b, c = rotateToParallelAndPerpendicular(a, b, c)
 	return Compose(simplify2(a, b), Transformation{c})
 }
 
-func simplify4(a, b, c, d g.Line) Transformation {
+// simplify4 simplifies a Transformation represented by geometry.Lines a, b, c,
+// and d into its simplest form.
+func simplify4(a, b, c, d geometry.Line) Transformation {
 	f3 := simplify3(a, b, c)
 	if len(f3) < 3 {
 		return Simplify(Compose(f3, Transformation{d}))
@@ -73,37 +83,46 @@ func simplify4(a, b, c, d g.Line) Transformation {
 		return Simplify(Compose(Transformation{a}, l3))
 	}
 	a, b, c = f3[0], f3[1], f3[2]
-	if g.AreParallel(b, d) {
+	if geometry.AreParallel(b, d) {
 		return Transformation{shiftBToC(a, b, d), c}
 	}
 	a, d = rotateBCToSame(a, c, b, d)
 	return Transformation{a, d}
 }
 
-func rotateBCToSame(a, b, c, d g.Line) (g.Line, g.Line) {
-	ia := g.MustPoint(g.Intersection(a, b))
-	ib := g.MustPoint(g.Intersection(c, d))
-	l := g.MustLine(g.NewLineFromPoints(ia, ib))
-	radsa, radsb := g.Angle(b, l), g.Angle(c, l)
-	a, d = g.Rotate(a, ia, radsa), g.Rotate(d, ib, radsb)
-	return a, d
+// rotateBCToSame takes geometry.Lines a, b, c, and d representing a rotation
+// with a and b and a rotation with c and d and simplifies them to a single
+// rotation by turning the rotations so b and c are the same and cancel.
+func rotateBCToSame(a, b, c, d geometry.Line) (geometry.Line, geometry.Line) {
+	ia := geometry.MustPoint(geometry.Intersection(a, b))
+	ib := geometry.MustPoint(geometry.Intersection(c, d))
+	l := geometry.MustLine(geometry.NewLineFromPoints(ia, ib))
+	radsa, radsb := geometry.Angle(b, l), geometry.Angle(c, l)
+	return geometry.Rotate(a, ia, radsa), geometry.Rotate(d, ib, radsb)
 }
 
-// Only works for parallel g.Lines.
-func shiftBToC(a, b, c g.Line) g.Line {
-	return g.Shift(a, g.ShortestVector(b, c))
+// shiftBToC takes geometry.Lines a, b, and c representing line-reflections and
+// simplifies them to a single line-reflection by shifting a and b by the
+// geometry.Vector that makes b the same as c causing b and c to cancel.
+func shiftBToC(a, b, c geometry.Line) geometry.Line {
+	return geometry.Shift(a, geometry.ShortestVector(b, c))
 }
 
-// Returned a and b always parallel
-func rotateToPerpendicularAndParallel(a, b, c g.Line) (g.Line, g.Line, g.Line) {
-	if g.AreParallel(a, b) {
+// rotateToParallelAndPerpendicular takes geometry.Lines a, b, and c
+// representing line-reflections with at least one pair of geometry.Lines
+// intersecting and rotates them so that the first two returned geometry.Lines
+// are parallel and the second two are perpendicular.
+func rotateToParallelAndPerpendicular(
+	a, b, c geometry.Line,
+) (geometry.Line, geometry.Line, geometry.Line) {
+	if geometry.AreParallel(a, b) {
 		a, b, c = c, a, b
 	}
-	rads := g.Angle(b, c)
-	i := g.MustPoint(g.Intersection(a, b))
-	a, b, c = g.Rotate(a, i, math.Pi/2-rads), g.Rotate(b, i, math.Pi/2-rads), c
-	rads = g.Angle(b, a)
-	i = g.MustPoint(g.Intersection(b, c))
-	a, b, c = a, g.Rotate(b, i, rads), g.Rotate(c, i, rads)
-	return a, b, c
+	rads := geometry.Angle(b, c)
+	i := geometry.MustPoint(geometry.Intersection(a, b))
+	a = geometry.Rotate(a, i, math.Pi/2-rads)
+	b = geometry.Rotate(b, i, math.Pi/2-rads)
+	rads = geometry.Angle(b, a)
+	i = geometry.MustPoint(geometry.Intersection(b, c))
+	return a, geometry.Rotate(b, i, rads), geometry.Rotate(c, i, rads)
 }

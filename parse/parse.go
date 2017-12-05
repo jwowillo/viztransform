@@ -31,9 +31,9 @@ var (
 // Transformation parses a transform.Transformation from the io.Reader r.
 //
 // A transform.Transformation's string is a newline separated string-list where
-// string is a string-representation of a called transform.Transformation
-// constructor. Each string is turned into its respective
-// transform.Transformations and then composed together.
+// string is a string-representation of a called
+// transform.Transformation-constructor. Each string is turned into its
+// respective transform.Transformations and then composed together.
 //
 // Returns an error if any string can't be parsed depending on the reason.
 // Returns ErrBadTransformation if the constructor name isn't recognized, the
