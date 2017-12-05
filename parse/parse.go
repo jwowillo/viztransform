@@ -17,15 +17,15 @@ import (
 var (
 	// ErrBadTransformation is returned when a transform.Transformation's
 	// string is bad.
-	ErrBadTransformation = errors.New("bad Transformation string")
+	ErrBadTransformation = errors.New("bad geometry.Transformation string")
 	// ErrBadLine is returned when a geometry.Line's string is bad.
-	ErrBadLine = errors.New("bad Line string")
+	ErrBadLine = errors.New("bad geometry.Line string")
 	// ErrBadPoint is returned when a geometry.Point's string is bad.
-	ErrBadPoint = errors.New("bad Point string")
+	ErrBadPoint = errors.New("bad geometry.Point string")
 	// ErrBadVector is returned when a geometry.Vector's string is bad.
-	ErrBadVector = errors.New("bad Vector string")
+	ErrBadVector = errors.New("bad geometry.Vector string")
 	// ErrBadNumber is returned when a geometry.Number's string is bad.
-	ErrBadNumber = errors.New("bad Number string")
+	ErrBadNumber = errors.New("bad geometry.Number string")
 )
 
 // Transformation parses a transform.Transformation from the io.Reader r.

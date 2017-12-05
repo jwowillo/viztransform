@@ -33,20 +33,23 @@ func Compose(ts ...Transformation) Transformation {
 	return composed
 }
 
-// NoTransformation creates a Transformation with TypeNoTransformation that does
-// nothing to geometry.Points.
+// NoTransformation is a Transformation-constructor that creates a
+// Transformation with TypeNoTransformation that does nothing to
+// geometry.Points.
 func NoTransformation() Transformation {
 	return Transformation{}
 }
 
-// LineReflection creates a Transformation with TypeLineReflection that reflects
-// geometry.Points about geometry.Line l as described by TypeLineReflection.
+// LineReflection is a Transformation-constructor that creates a Transformation
+// with TypeLineReflection that reflects geometry.Points about geometry.Line l
+// as described by TypeLineReflection.
 func LineReflection(l geometry.Line) Transformation {
 	return Transformation{l}
 }
 
-// Translation creates a Transformation with TypeTranslation that translates
-// geometry.Points by the geometry.Vector v as described by TypeTranslation.
+// Translation is a Transformation-constructor that creates a Transformation
+// with TypeTranslation that translates geometry.Points by the geometry.Vector v
+// as described by TypeTranslation.
 //
 // Returns NoTransformation() if v is length 0.
 func Translation(v geometry.Vector) Transformation {
@@ -63,9 +66,9 @@ func Translation(v geometry.Vector) Transformation {
 	}
 }
 
-// Rotation creates a Transformation with TypeRotation that rotates
-// geometry.Points by geometry.Number rads radians counter-clockwise around
-// geometry.Point p.
+// Rotation is a Transformation-constructor that creates a Transformation with
+// TypeRotation that rotates geometry.Points by geometry.Number rads radians
+// counter-clockwise around geometry.Point p.
 //
 // Returns NoTransformation() if rads is 0.
 func Rotation(p geometry.Point, rads geometry.Number) Transformation {
@@ -80,11 +83,11 @@ func Rotation(p geometry.Point, rads geometry.Number) Transformation {
 	return Transformation{a, b}
 }
 
-// GlideReflection creates a Transformation with TypeGlideReflection that
-// is a Transformation with TypeLineReflection with ref used as the
-// geometry.Line used to create it composed with a Transformation with
-// TypeTranslation with the projection of geometry.Vector v onto the
-// geometry.Line ref used to create it.
+// GlideReflection is a Tranformation-constructor that creates a Transformation
+// with TypeGlideReflection that is a Transformation with TypeLineReflection
+// with ref used as the geometry.Line used to create it composed with a
+// Transformation with TypeTranslation with the projection of geometry.Vector v
+// onto the geometry.Line ref used to create it.
 //
 // Returns LineReflection(ref) if v is length 0.
 func GlideReflection(ref geometry.Line, v geometry.Vector) Transformation {
