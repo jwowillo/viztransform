@@ -1,3 +1,0 @@
-LineReflection({(0 0) (4 3)})
-LineReflection({(4 3) (4 0)})
-LineReflection({(4 0) (0 0)})

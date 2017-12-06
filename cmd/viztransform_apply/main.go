@@ -1,63 +1,48 @@
+// Package main applies a transform.Transformation to a geometry.Point with more
+// documentation from the help flag.
 package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"os"
 
+	"github.com/jwowillo/viztransform/cmd"
 	"github.com/jwowillo/viztransform/parse"
 	"github.com/jwowillo/viztransform/transform"
 )
 
+// main applies the transform.Transformation read from STDIN to the
+// geometry.Point in the args.
 func main() {
 	if len(os.Args) != 2 {
-		fail(errArgs)
+		cmd.Fail(errArgs)
 	}
 	arg := os.Args[1]
 	p, err := parse.Point(arg)
 	if err != nil {
-		fail(err)
+		cmd.Fail(err)
 	}
 	t, err := parse.Transformation(os.Stdin)
 	if err != nil {
-		fail(err)
+		cmd.Fail(err)
 	}
 	fmt.Println(transform.Apply(t, p))
 }
 
+// errArgs is the error when not exactly a single geometry.Point is passed.
 var errArgs = errors.New("must pass point to transform")
 
-func fail(err error) {
-	fmt.Fprintf(os.Stderr, "%v\n", err)
-	os.Exit(1)
-}
-
+// init the command.
 func init() {
-	flag.Usage = usage
-	flag.Parse()
+	cmd.Init(usage)
 }
 
-func usage() {
-	out := "Usage of viztransform_apply:\n"
-	out += "\tviztransform_apply '(x y)'\n\n"
-	out += "\tThe passed point will be transformed by a transformation\n"
-	out += "\tread from stdin as a new-line separated list of individual\n"
-	out += "\ttransformations to be composed and terminated by an EOF.\n\n"
-	out += "\tTransformations:\n"
-	out += "\t- NoTransformation()\n"
-	out += "\t- LineReflection({(ax ay) (bx by)})\n"
-	out += "\t- Translation(<i j>)\n"
-	out += "\t- Rotation((x y), rads)\n"
-	out += "\t- GlideReflection({(ax ay) (bx by)}, <i j>)\n\n"
-	out += "\tExample:\n"
-	out += "\tviztransform_apply '(1 1)'\n"
-	out += "\tNoTransformation()\n"
-	out += "\tLineReflection({(0 0) (0 1)})\n"
-	out += "\tTranslation({(0 0) (1 0)}, 1)\n"
-	out += "\tRotation((0 0), -1.5707963)\n"
-	out += "\tGlideReflection({(0 -0.5) (1 -0.5)}, 1)\n"
-	out += "\tEOF\n"
-	out += "\t(2.000000 -1.000000)\n"
-	fmt.Fprintf(os.Stderr, out)
-}
+// usage to print.
+const usage = `viztransform_apply usage:
+
+	viztransform_apply '(x y)'
+
+	The passed point will be transformed by a transformation read from
+	STDIN as a newline-separated and EOF-terminated list of transformations
+	to be composed.`

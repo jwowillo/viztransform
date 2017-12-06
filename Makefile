@@ -29,6 +29,7 @@ viztransform_viz:
 # doc makes the docs.
 doc:
 	@echo 'making doc'
+	$(call pdf,algorithm)
 	@echo
 
 

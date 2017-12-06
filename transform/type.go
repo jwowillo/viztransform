@@ -24,7 +24,7 @@ const (
 	// to the geometry.Line passing through the geometry.Point.
 	//
 	// A Transformation with a single geometry.Line has this Type where the
-	// geometry.Line is the one being reflected about.
+	// geometry.Line is the one being reflected across.
 	TypeLineReflection
 	// TypeTranslation belongs to Transformations that translate
 	// geometry.Points by a geometry.Vector.

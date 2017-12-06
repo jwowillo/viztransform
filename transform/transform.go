@@ -90,6 +90,9 @@ func Rotation(p geometry.Point, rads geometry.Number) Transformation {
 // onto the geometry.Line ref used to create it.
 //
 // Returns LineReflection(ref) if v is length 0.
+//
+// Has this interface because a Transformation can still be determined if v is
+// length 0.
 func GlideReflection(ref geometry.Line, v geometry.Vector) Transformation {
 	a := geometry.PerpendicularThroughPoint(ref, geometry.Point{X: 0, Y: 0})
 	b := geometry.PerpendicularThroughPoint(
