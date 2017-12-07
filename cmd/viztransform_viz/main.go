@@ -48,5 +48,5 @@ const usage = `viztransform_viz usage:
 	newline-separated and EOF-terimanted list of transformations to be
 	composed. The vizualization will consist of 1 panel demonstrating the
 	transformation if the transformation is already simplified and 2 panels
-	demonstrating the transformation and the isomorphic simplified
-	transformation otherwise.`
+	demonstrating the transformation and the simplified transformation
+	otherwise.`

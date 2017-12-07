@@ -54,7 +54,7 @@ func Angle(a, b Line) Number {
 	}
 	radsa := math.Atan2(float64(dy(a)), float64(dx(a)))
 	radsb := math.Atan2(float64(dy(b)), float64(dx(b)))
-	rads := Number(radsa - radsb)
+	rads := Number(math.Mod(radsa-radsb, 2*math.Pi))
 	i := MustPoint(Intersection(a, b))
 	if AreParallel(Rotate(a, i, rads), b) {
 		return rads

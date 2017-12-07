@@ -1,3 +1,16 @@
+---
+author:
+- John William O'Rourke
+...
+
+just use latex
+
+# A Plane-Transformation Simplification-Algorithm
+
+## Introduction
+
+## Algorithm
+
 ```
 func Simplify(t Transformation) Transformation {
 	if len(t) < 2  { return t }
@@ -43,3 +56,9 @@ func Simplify4(a, b, c, d Line) Transformation {
 	return Transformation{a, d}
 }
 ```
+
+## Correctness
+
+## Complexity
+
+## Examples

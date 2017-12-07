@@ -15,9 +15,11 @@ corresponding command.
 Instructions for running `viztransform_apply|simplify|viz` can be found after
 installing the commands by running `viztransform_apply|simplify|viz --help`.
 
+Examples to test commands are in directory 'example'.
+
 ## Documentation
 
-Documentation is located in the directory 'doc' in the form of Markdown-files
-for the project-requirements, project-design, and discussion of the
-simplification-algorithm and vizualizations and PDFs generated from the
-Markdown-files.
+Documentation is located in directory 'doc' in the form of Markdown-files
+for the project-requirements and project-design and a latex-file for the
+simplification-algorithm discussion. PDFs generated from all of these are also
+included.
