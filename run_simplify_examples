@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# run_simplify_examples runs viztransform_simplify on every example.
+
+for file in ./example/*.txt
+do
+  echo "$file"
+  echo '--------------------------------'
+  echo 'Initial:'
+  cat $file
+  echo
+  echo 'Simplified:'
+  cat $file | viztransform_simplify
+  echo
+done

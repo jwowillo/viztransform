@@ -7,6 +7,7 @@ package geometry
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -122,4 +123,21 @@ func (n Number) String() string {
 		n = 0
 	}
 	return strconv.FormatFloat(float64(n), 'f', -1, 32)
+}
+
+// Angle between two things.
+type Angle Number
+
+// String representation of the Angle.
+//
+// Looks like the equivalent Angle with the smallest distance to 0.
+func (a Angle) String() string {
+	rads := math.Mod(float64(a), 2*math.Pi)
+	if rads > math.Pi {
+		rads = -rads - 2*math.Pi
+	}
+	if rads < -math.Pi {
+		rads = -2*math.Pi - rads
+	}
+	return Number(rads).String()
 }

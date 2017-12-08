@@ -1,0 +1,2 @@
+NoTransformation()
+Rotation((0 0), 0)

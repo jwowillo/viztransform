@@ -17,15 +17,17 @@ import (
 var (
 	// ErrBadTransformation is returned when a transform.Transformation's
 	// string is bad.
-	ErrBadTransformation = errors.New("bad geometry.Transformation string")
+	ErrBadTransformation = errors.New("bad geometry.Transformation-string")
 	// ErrBadLine is returned when a geometry.Line's string is bad.
-	ErrBadLine = errors.New("bad geometry.Line string")
+	ErrBadLine = errors.New("bad geometry.Line-string")
 	// ErrBadPoint is returned when a geometry.Point's string is bad.
-	ErrBadPoint = errors.New("bad geometry.Point string")
+	ErrBadPoint = errors.New("bad geometry.Point-string")
 	// ErrBadVector is returned when a geometry.Vector's string is bad.
-	ErrBadVector = errors.New("bad geometry.Vector string")
+	ErrBadVector = errors.New("bad geometry.Vector-string")
 	// ErrBadNumber is returned when a geometry.Number's string is bad.
-	ErrBadNumber = errors.New("bad geometry.Number string")
+	ErrBadNumber = errors.New("bad geometry.Number-string")
+	// ErrBadAngle is returned when a geometry.Angle's string is bad.
+	ErrBadAngle = errors.New("bad geometry.Angle-string")
 )
 
 // Transformation parses a transform.Transformation from the io.Reader r.
@@ -140,8 +142,8 @@ func translation(xs []string) (transform.Transformation, error) {
 //
 // Returns ErrBadTransformation if there aren't exactly 2 arguments passed.
 // Returns ErrBadPoint if the first argument can't be parsed to a
-// geometry.Point. Returns ErrBadNumber if the second argument can't be parsed
-// to a geometry.Number.
+// geometry.Point. Returns ErrBadAngle if the second argument can't be parsed
+// to a geometry.Angle.
 func rotation(xs []string) (transform.Transformation, error) {
 	if len(xs) != 2 {
 		return nil, ErrBadTransformation
@@ -150,7 +152,7 @@ func rotation(xs []string) (transform.Transformation, error) {
 	if err != nil {
 		return nil, err
 	}
-	rads, err := Number(xs[1])
+	rads, err := Angle(xs[1])
 	if err != nil {
 		return nil, err
 	}
@@ -263,4 +265,16 @@ func Number(x string) (geometry.Number, error) {
 		return 0, ErrBadNumber
 	}
 	return geometry.Number(n), nil
+}
+
+// Angle parses a geometry.Angle from the string x.
+//
+// Returns ErrBadAngle if the string doesn't fit the geometry.Angle
+// string-representation pattern.
+func Angle(x string) (geometry.Angle, error) {
+	a, err := Number(x)
+	if err != nil {
+		return 0, ErrBadAngle
+	}
+	return geometry.Angle(a), nil
 }

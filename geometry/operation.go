@@ -46,20 +46,21 @@ func Distance(a, b Point) Number {
 	return Length(Vector{I: b.X - a.X, J: b.Y - a.Y})
 }
 
-// Angle to rotate Line a counter-clockwise around the intersection with Line b
-// so both Lines are parallel.
-func Angle(a, b Line) Number {
+// AngleBetween Lines a and b so that it is the shortest Angle to rotate a
+// counter-clockwise to be parallel to b.
+func AngleBetween(a, b Line) Angle {
 	if AreParallel(a, b) {
 		return 0
 	}
 	radsa := math.Atan2(float64(dy(a)), float64(dx(a)))
 	radsb := math.Atan2(float64(dy(b)), float64(dx(b)))
-	rads := Number(math.Mod(radsa-radsb, 2*math.Pi))
+	rads := radsa - radsb
 	i := MustPoint(Intersection(a, b))
-	if AreParallel(Rotate(a, i, rads), b) {
-		return rads
+	if !AreParallel(Rotate(a, i, Angle(rads)), b) {
+		rads = 2*math.Pi - rads
 	}
-	return Number(math.Pi - rads)
+	rads = math.Mod(rads, 2*math.Pi)
+	return Angle(rads)
 }
 
 // Perpendicular Line to Line l through any Point on l.
@@ -90,14 +91,14 @@ func Intersection(a, b Line) (Point, error) {
 	return Point{X: xn / d, Y: yn / d}, nil
 }
 
-// RotateAroundOrigin rotates Line l counter-clockwise by rads radians around
+// RotateAroundOrigin rotates Line l counter-clockwise by Angle rads around
 // the origin.
-func RotateAroundOrigin(l Line, rads Number) Line {
+func RotateAroundOrigin(l Line, rads Angle) Line {
 	return Rotate(l, Point{X: 0, Y: 0}, rads)
 }
 
-// Rotate Line l counter-clockise around Point p by rads radians.
-func Rotate(l Line, p Point, rads Number) Line {
+// Rotate Line l counter-clockise around Point p by Angle rads.
+func Rotate(l Line, p Point, rads Angle) Line {
 	ax, ay, bx, by := l.a.X-p.X, l.a.Y-p.Y, l.b.X-p.X, l.b.Y-p.Y
 	cos := Number(math.Cos(float64(rads)))
 	sin := Number(math.Sin(float64(rads)))

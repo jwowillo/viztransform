@@ -1,2 +1,0 @@
-Translation(<1 0>)
-LineReflection({(2 0) (2 1)})

@@ -97,7 +97,7 @@ func rotateBCToSame(a, b, c, d geometry.Line) (geometry.Line, geometry.Line) {
 	ia := geometry.MustPoint(geometry.Intersection(a, b))
 	ib := geometry.MustPoint(geometry.Intersection(c, d))
 	l := geometry.MustLine(geometry.NewLineFromPoints(ia, ib))
-	radsa, radsb := geometry.Angle(b, l), geometry.Angle(c, l)
+	radsa, radsb := geometry.AngleBetween(b, l), geometry.AngleBetween(c, l)
 	return geometry.Rotate(a, ia, radsa), geometry.Rotate(d, ib, radsb)
 }
 
@@ -118,11 +118,11 @@ func rotateToParallelAndPerpendicular(
 	if geometry.AreParallel(a, b) {
 		a, b, c = c, a, b
 	}
-	rads := geometry.Angle(b, c)
+	rads := geometry.AngleBetween(b, c)
 	i := geometry.MustPoint(geometry.Intersection(a, b))
 	a = geometry.Rotate(a, i, math.Pi/2-rads)
 	b = geometry.Rotate(b, i, math.Pi/2-rads)
-	rads = geometry.Angle(b, a)
+	rads = geometry.AngleBetween(b, a)
 	i = geometry.MustPoint(geometry.Intersection(b, c))
 	return a, geometry.Rotate(b, i, rads), geometry.Rotate(c, i, rads)
 }

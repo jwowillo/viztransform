@@ -29,7 +29,7 @@ Transformations:
 	- NoTransformation(): Does nothing.
 	- LineReflection({(ax ay) (bx by)}): Reflects points across the line.
 	- Translation(<i j>): Translates points by the vector.
-	- Rotation((x y), rads): Rotates points counter-clockwise by radians
+	- Rotation((x y), rads): Rotates points counter-clockwise by rads
 	  around the point.
 	- GlideReflection({(ax ay) (bx by)}, <i j>): Reflects points across the
 	  line and translates by the vector.

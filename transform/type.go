@@ -4,7 +4,6 @@ package transform
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/jwowillo/viztransform/geometry"
 )
@@ -121,17 +120,15 @@ func stringTranslation(a, b geometry.Line) string {
 // stringRotation returns the string-representation of the Transformation with
 // TypeRotation created by intersecting geometry.Lines a and b.
 //
-// Looks like 'Rotation(geometry.Point, geometry.Number)' where geometry.Point
-// is the intersection of a and b and geometry.Number is 2 times the angle from
+// Looks like 'Rotation(geometry.Point, geometry.Angle)' where geometry.Point
+// is the intersection of a and b and geometry.Angle is 2 times the angle from
 // a to b mod 2pi since a rotation from 2 line-reflections rotates 2 times the
 // angle from the first geometry.Line to the second.
 func stringRotation(a, b geometry.Line) string {
 	return fmt.Sprintf(
 		"Rotation(%s, %s)",
 		geometry.MustPoint(geometry.Intersection(a, b)),
-		geometry.Number(
-			math.Mod(float64(2*geometry.Angle(a, b)), 2*math.Pi),
-		),
+		2*geometry.AngleBetween(a, b),
 	)
 }
 

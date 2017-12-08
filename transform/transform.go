@@ -67,12 +67,12 @@ func Translation(v geometry.Vector) Transformation {
 }
 
 // Rotation is a Transformation-constructor that creates a Transformation with
-// TypeRotation that rotates geometry.Points by geometry.Number rads radians
+// TypeRotation that rotates geometry.Points by geometry.Angle rads
 // counter-clockwise around geometry.Point p.
 //
 // Returns NoTransformation() if rads is 0.
-func Rotation(p geometry.Point, rads geometry.Number) Transformation {
-	if geometry.IsZero(rads) {
+func Rotation(p geometry.Point, rads geometry.Angle) Transformation {
+	if geometry.IsZero(geometry.Number(rads)) {
 		return NoTransformation()
 	}
 	a := geometry.MustLine(geometry.NewLineFromPoints(
