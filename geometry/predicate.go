@@ -32,6 +32,6 @@ func AreSameLine(a, b Line) bool {
 	if !AreParallel(a, b) {
 		return false
 	}
-	m, n, c := standard(b)
+	m, n, c := StandardCoefficients(b)
 	return AreEqual(m*a.a.X+n*a.a.Y, c)
 }

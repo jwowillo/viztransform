@@ -1,5 +1,6 @@
-// Package transform defines a Transformation and provides constructors for,
-// ways to find the types of, and ways to simplify Transformations.
+// Package transform defines a Transformation representing rigid
+// plane-transformations and provides constructors for, ways to find the types
+// of, and ways to simplify Transformations.
 package transform
 
 import (

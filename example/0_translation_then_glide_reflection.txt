@@ -1,0 +1,2 @@
+Translation(<0 0>)
+GlideReflection({(0 0) (1 0)}, <1 0>)

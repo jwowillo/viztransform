@@ -54,12 +54,11 @@ func AngleBetween(a, b Line) Angle {
 	}
 	radsa := math.Atan2(float64(dy(a)), float64(dx(a)))
 	radsb := math.Atan2(float64(dy(b)), float64(dx(b)))
-	rads := radsa - radsb
+	rads := math.Mod(radsa-radsb, 2*math.Pi)
 	i := MustPoint(Intersection(a, b))
 	if !AreParallel(Rotate(a, i, Angle(rads)), b) {
 		rads = 2*math.Pi - rads
 	}
-	rads = math.Mod(rads, 2*math.Pi)
 	return Angle(rads)
 }
 
@@ -134,11 +133,11 @@ func dot(a, b Vector) Number {
 	return a.I*b.I + a.J*b.J
 }
 
-// standard Line-equation for the Line in terms of the coefficients of x and y
-// and the value c the equation is equal to.
+// StandardCoefficients for the Line's equation and the value the equation is
+// equal to.
 //
 // Line-equation is ax + by = c.
-func standard(l Line) (Number, Number, Number) {
+func StandardCoefficients(l Line) (Number, Number, Number) {
 	m, n := dy(l), -dx(l)
 	return m, n, m*l.a.X + n*l.a.Y
 }

@@ -1,8 +1,8 @@
 # `viztransform`
 
-viztransform contains library-packages for working with and vizualizing
-plane-transformations along with command-packages for easily simplifying,
-applying, and vizualizing transformations from a CLI.
+viztransform contains library-packages for working with and vizualizing rigid
+plane-transformations, or isometries, along with command-packages for easily
+simplifying, applying, and vizualizing these transformations from a CLI.
 
 ## Installing
 
